@@ -12,5 +12,7 @@ Imports:
   readxl,
   tools,
   stringr,
-  dplyr
+  dplyr,
+  googlesheets,
+  readr
 RoxygenNote: 6.1.0

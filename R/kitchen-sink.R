@@ -41,3 +41,26 @@ read_multiple_xlsx <- function(
 
   return(returnObject)
 }
+
+#' @title Write a larger file to Google Sheets by writing csv then uploading that file
+#'
+#' @description
+#' Extends \code{googlesheets::gs_upload()} by doing the write_csv and upload task for you.
+#' If you want to modify \code{readr::wrte_csv()} do it in seperate calls.
+#'
+#' @param data the dataframe to upload.
+#' @param sheet_title the title of the newly uploaded sheet
+#' @param overwrite should it overwrite a sheet of the same name? defaults to \code{TRUE}.
+#' @param ... parameters to pass into \code{googlesheets::gs_upload()}
+#'
+#' @export
+gs_large_upload <- function(
+    data
+  , sheet_title
+  , overwrite   = TRUE
+  , ...
+) {
+  path <- tempfile(fileext = '.csv')
+  readr::write_csv(data, path)
+  googlesheets::gs_upload(path, sheet_title = sheet_title, overwrite = overwrite, ...)
+}
