@@ -2,11 +2,15 @@ Package: darkiseskream
 Type: Package
 Title: Darkiseskream, welcome to the dark side
 Version: 0.1.0
-Author: person("Andrew", "Watson", email = "adwatson2010@gmail.com",
+Authors@R: person("Andrew", "Watson", email = "adwatson2010@gmail.com",
   role = c("aut", "cre"))
-Description: A catch all package 
+Description: A catch all package by blakiseskream. 
 License: GPL
 Encoding: UTF-8
 LazyData: true
+Imports:
+  readxl,
+  tools,
+  stringr,
+  dplyr
 RoxygenNote: 6.1.0
-
