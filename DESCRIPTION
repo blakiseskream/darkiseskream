@@ -14,5 +14,6 @@ Imports:
   stringr,
   dplyr,
   googlesheets,
-  readr
+  readr,
+  sparklyr
 RoxygenNote: 6.1.0

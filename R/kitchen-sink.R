@@ -12,7 +12,7 @@
 #'
 #' @export
 read_multiple_xlsx <- function(
-  search_string = "."
+   search_string = "."
   ,folderPath    = "./"
   ,add_filename_column = FALSE
   ,...
@@ -63,4 +63,48 @@ gs_large_upload <- function(
   path <- tempfile(fileext = '.csv')
   readr::write_csv(data, path)
   googlesheets::gs_upload(path, sheet_title = sheet_title, overwrite = overwrite, ...)
+}
+
+#' @title use the Spark API to write a dataframe as a Hive table with optional file format and path params. Works with Spark 2.0 w/ Hive.
+#'
+#' @description
+#' This function mimics a series of Spark API calls in the format of \code{df.write.format('format').mode('mode').option('path','path://').saveAsTable('table_name')}
+#' This allows a user to save a spark dataframe to Hive by not only writing it to a specific path in a specific format but also saving it to Hive metastore.
+#' For more details see the \href{https://spark.apache.org/docs/latest/sql-programming-guide.html#generic-loadsave-functions}{Spark docs} on loading and saving tables
+#'
+#' You can choose to chain further commands afer this function with the format sdf_
+#'
+#' @param tbl a spark dataframe or dplyr tbl, to be passed into \code{spark_dataframe()} call
+#' @param table_name the name of the table for hive metastore. For database specific use the format \code{dbname.table_name}
+#' @param format the file format to save as, defaults as orc. For more details see the \href{https://spark.apache.org/docs/latest/sql-programming-guide.html#generic-loadsave-functions}{Spark docs}
+#' @param mode the write mode, defaults to 'overwrite'. Can also take, 'append', 'ignore', and 'error.' For more details see the \href{https://spark.apache.org/docs/latest/sql-programming-guide.html#generic-loadsave-functions}{Spark docs}
+#' @param path optional character string. the path to save the file to, e.g. "s3://my_bucket/iris/"
+#'
+#' @import dplyr
+#'
+#' @export
+sdf_write_and_save_table <- function(
+    tbl
+  , table_name
+  , format = "orc"
+  , mode   = "overwrite"
+  , path   = NULL
+) {
+  sdf <- sparklyr::spark_dataframe(tbl)
+
+  if(!is.null(path)) {
+    writer <- sparklyr::invoke(sdf, "write") %>%
+      sparklyr::invoke('format', format) %>%
+      sparklyr::invoke('mode', mode) %>%
+      sparklyr::invoke('option','path', path) %>%
+      sparklyr::invoke('saveAsTable', table_name)
+
+  } else {
+    writer <- sparklyr::invoke(sdf, "write") %>%
+      sparklyr::invoke('format', format) %>%
+      sparklyr::invoke('mode', mode) %>%
+      sparklyr::invoke('saveAsTable', table_name)
+  }
+
+  return(writer)
 }
