@@ -3,4 +3,5 @@
 export(gs_large_upload)
 export(read_multiple_xlsx)
 export(sdf_write_and_save_table)
+export(tidy_acf)
 import(dplyr)

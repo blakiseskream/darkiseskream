@@ -108,3 +108,37 @@ sdf_write_and_save_table <- function(
 
   return(writer)
 }
+
+#' @title produces a tidy output of the \code{acf} function from \code{rstats}
+#'
+#' @description
+#' acf function output as a tibble!
+#' credit goes to Matt Dancho at Business Science in the time series with Keras tutorial \href{https://www.business-science.io/timeseries-analysis/2018/04/18/keras-lstm-sunspots-time-series-prediction.html}{here}
+#'
+#'
+#' @param data dataframe or tibble
+#' @param value the value in the datframe to produce for
+#' @param lags the lags to use, defaults to 0:20
+#' @param ... values to pass into \code{acf()}
+#'
+#' @import dplyr
+#'
+#' @export
+tidy_acf <- function(data, value, lags = 0:20, ...) {
+
+  value_expr <- enquo(value)
+
+  acf_values <- data %>%
+    pull(value) %>%
+    stats::acf(lag.max = utils::tail(lags, 1), plot = FALSE, ...) %>%
+    .$acf %>%
+    .[,,1]
+
+  ret <- tibble::tibble(acf = acf_values) %>%
+    tibble::rowid_to_column(var = "lag") %>%
+    mutate(lag = lag - 1) %>%
+    filter(lag %in% lags)
+
+  return(ret)
+}
+
