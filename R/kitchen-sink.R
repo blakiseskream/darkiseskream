@@ -142,3 +142,29 @@ tidy_acf <- function(data, value, lags = 0:20, ...) {
   return(ret)
 }
 
+#' @title wrapper around dplyr \code(distinct() %>% count())
+#'
+#' @description
+#' Combine \code(count()) and \code(distinct()) !
+#'
+#' @param x sthe data frame to perform over
+#' @param ... vars to perform over
+#' @param wt wt parameter for \code(count())
+#' @param sort sort parameter for \c0de(count())
+#'
+#' @import dplyr
+#'
+#' @export
+count_distinct <- function(x, ..., wt = NULL, sort = FALSE) {
+
+  df <- x %>%
+    distinct(...) %>%
+    count(
+       ...
+      ,wt = wt
+      ,sort = sort
+    )
+
+  return(df)
+}
+

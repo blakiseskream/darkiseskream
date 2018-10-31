@@ -4,7 +4,7 @@
 \alias{tidy_acf}
 \title{produces a tidy output of the \code{acf} function from \code{rstats}}
 \usage{
-tidy_acf(data, value, lags = 0:20)
+tidy_acf(data, value, lags = 0:20, ...)
 }
 \arguments{
 \item{data}{dataframe or tibble}
@@ -12,6 +12,8 @@ tidy_acf(data, value, lags = 0:20)
 \item{value}{the value in the datframe to produce for}
 
 \item{lags}{the lags to use, defaults to 0:20}
+
+\item{...}{values to pass into \code{acf()}}
 }
 \description{
 acf function output as a tibble!
