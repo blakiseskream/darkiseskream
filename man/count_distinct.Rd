@@ -2,7 +2,7 @@
 % Please edit documentation in R/kitchen-sink.R
 \name{count_distinct}
 \alias{count_distinct}
-\title{wrapper around dplyr \code(distinct() %>% count())}
+\title{wrapper around dplyr \code{distinct()} and\code{count()}}
 \usage{
 count_distinct(x, ..., wt = NULL, sort = FALSE)
 }
@@ -11,10 +11,10 @@ count_distinct(x, ..., wt = NULL, sort = FALSE)
 
 \item{...}{vars to perform over}
 
-\item{wt}{wt parameter for \code(count())}
+\item{wt}{wt parameter for \code{count()}}
 
-\item{sort}{sort parameter for \c0de(count())}
+\item{sort}{sort parameter for \code{count()}}
 }
 \description{
-Combine \code(count()) and \code(distinct()) !
+Combine \code{count()} and \code{distinct()} !
 }

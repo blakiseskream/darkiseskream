@@ -109,6 +109,50 @@ sdf_write_and_save_table <- function(
   return(writer)
 }
 
+#' @title Download all files from Google Drive folder
+#'
+#' @description
+#' Wrapper around \code{googledrive::download} to pull all files located in a Google Drive folder.
+#' Optionally filter for files of a specific type or save to a temporary folder.
+#' Returns a vector of file paths to the downloaded files.
+#'
+#' @param path folder path, id, or url to pass into \code{googledrive::drive_ls}. Use \code{googledrive::as_id()} if URL or id.
+#' @param temp boolean. Should it save to a temp location? If FALSE the files are saved in the directory specified in saveToPath.
+#' @param fileExt list of characters, optional. only download files with specified file extensions. Do not include a ".", just the extension.
+#' @param saveToPath character, optional. If temp = FALSE then defaults to the current directory, otherwise pass in a folder path with trailing "/"
+#' @param ... values to pass into \code{googledrive::drive_download()}
+#'
+#' @export
+drive_download_all <- function(path, temp = TRUE, fileExt = NULL, saveToPath = "./", ...) {
+
+  # get all the files
+  files_folder <- googledrive::drive_ls(path = path)
+  drive_resource <- files_folder$drive_resource
+
+  paths <- purrr::map(drive_resource, function(resource) {
+
+    # Verify file extension
+    if(!is.null(fileExt)){
+      if(! resource$fileExtension %in% fileExt) {
+        return(NULL)
+      }
+    }
+
+    # verify if temp or not
+    if(temp) {
+      path <- tempfile(resource$name, fileext = resource$fileExtension)
+    } else {
+      path <- paste0(saveToPath, resource$name)
+    }
+
+    # download the file
+    returnPath <- googledrive::drive_download(googledrive::as_id(resource$id), path, ... )
+
+  })
+
+  return(paths)
+}
+
 #' @title produces a tidy output of the \code{acf} function from \code{rstats}
 #'
 #' @description
@@ -142,15 +186,15 @@ tidy_acf <- function(data, value, lags = 0:20, ...) {
   return(ret)
 }
 
-#' @title wrapper around dplyr \code(distinct() %>% count())
+#' @title wrapper around dplyr \code{distinct()} and\code{count()}
 #'
 #' @description
-#' Combine \code(count()) and \code(distinct()) !
+#' Combine \code{count()} and \code{distinct()} !
 #'
 #' @param x sthe data frame to perform over
 #' @param ... vars to perform over
-#' @param wt wt parameter for \code(count())
-#' @param sort sort parameter for \c0de(count())
+#' @param wt wt parameter for \code{count()}
+#' @param sort sort parameter for \code{count()}
 #'
 #' @import dplyr
 #'

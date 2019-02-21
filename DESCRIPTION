@@ -15,5 +15,6 @@ Imports:
   dplyr,
   googlesheets,
   readr,
+  googledrive,
   sparklyr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
